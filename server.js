@@ -43,13 +43,7 @@ app.use((request,response,next)=>
 
 app.use((request,response)=>
 {
-    response.end("Cannot find file!");
-})
-
-app.post('/order',urlencodedParser,(request,response)=>
-{
-    const order=request.body;
-    console.log("Last Order:",request);
+    response.status(404).send("Page not found");
 });
 
 app.listen(PORT,()=>
