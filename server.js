@@ -1,7 +1,6 @@
 const PORT=3000;
 
 let express=require("express");
-let cors=require("cors");
 
 let fs=require("fs");
 let path=require("path");
@@ -10,10 +9,7 @@ let apiRouter=require("./routes/api_router.js");
 let staticPath=path.resolve(__dirname,"static");
 
 const app=express();
-app.use(express.static(staticPath));
-app.use(cors());
-
-app.use("/api",apiRouter);
+app.use(express.json());
 
 app.use((request,response,next)=>
 {
@@ -22,6 +18,22 @@ app.use((request,response,next)=>
     next();
 })
 
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+    response.setHeader('Access-Control-Allow-Headers',
+        'Origin, Accept, X-Requested-With, Content-Type');
+ 
+    if (request.method === 'OPTIONS') {
+        return response.sendStatus(200);
+    }
+ 
+    next();
+});
+
+app.use("/api",apiRouter);
+
+app.use(express.static(staticPath));
 app.use((request,response,next)=>
 {
     let filePath=path.join(__dirname,"static",request.url);
