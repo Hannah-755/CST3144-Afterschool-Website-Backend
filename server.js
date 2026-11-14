@@ -1,4 +1,7 @@
-const PORT=3000;
+let dotenv=require('dotenv');
+dotenv.config();
+
+const PORT=process.env.PORT||3000;
 
 let express=require("express");
 
@@ -6,10 +9,23 @@ let fs=require("fs");
 let path=require("path");
 
 let apiRouter=require("./routes/api_router.js");
+const DataBase = require("./database.js");
 let staticPath=path.resolve(__dirname,"static");
+
+const db=new DataBase();
 
 const app=express();
 app.use(express.json());
+
+async function startServer()
+{
+    await db.connect();
+
+    app.listen(PORT,()=>
+    {
+        console.log("Listening on port 3000");
+    });
+}
 
 app.use((request,response,next)=>
 {
@@ -61,7 +77,4 @@ app.use((request,response)=>
     response.status(404).send("Page not found");
 });
 
-app.listen(PORT,()=>
-{
-    console.log("Listening on port 3000");
-});
+startServer();
