@@ -1,17 +1,20 @@
 const PORT=3000;
 
 let express=require("express");
-let bodyParser=require("body-parser");
 let cors=require("cors");
 
 let fs=require("fs");
 let path=require("path");
 
+let apiRouter=require("./routes/api_router.js");
+let staticPath=path.resolve(__dirname,"static");
+
 const app=express();
-app.use(express.json());
+app.use(express.static(staticPath));
 app.use(cors());
 
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.use("/api",apiRouter);
+
 app.use((request,response,next)=>
 {
     console.log("Request IP:",request.url);
