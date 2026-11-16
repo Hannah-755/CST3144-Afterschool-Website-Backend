@@ -1,4 +1,5 @@
 let express=require("express");
+let DataBase=require("../database.js");
 let api=express.Router();
 /*const ALLOWED_IPS=[
     "127.0.0.1",
@@ -17,6 +18,7 @@ api.use((request,response,next)=>
     }
 })*/
 
+let db=new DataBase();
 
 api.get('/',(request,response)=>
 {
@@ -24,10 +26,16 @@ api.get('/',(request,response)=>
     response.send("please i'm so tired:",request);
 })
 
-api.get("/users/:userid",(request,response)=>
+api.get("/collection/:collectionName/:id",async(request,response)=>
 {
-    let userId=parseInt(request.params.userid,10);
-    response.send("hello pbeease "+userId);
+    let results=await db.find(request.params.collectionName, request.params.id);
+
+    if (results.msg)
+    {
+        response.status(400);
+        response.send(results.msg);
+    }
+    response.send(results);
 })
 
 api.post("/order",async(request,response)=>

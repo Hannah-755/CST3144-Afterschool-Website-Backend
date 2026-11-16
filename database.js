@@ -26,6 +26,27 @@ class DataBase
         }
     }
 
+    async find(collection,id)
+    {
+        try
+        {
+            if (!ObjectId.isValid(id))
+            {
+                console.log("in here");
+                return ({msg: "Invalid ObjectId"});
+            }
+
+            console.log("collection:",collection);
+            const result=await this.db.collection.findOne({_id: new ObjectId(id)})
+            console.log("result:",result);
+            return result
+        }
+        catch (error)
+        {
+            return error;
+        }
+    }
+
     async close()
     {
         this.client.close();
