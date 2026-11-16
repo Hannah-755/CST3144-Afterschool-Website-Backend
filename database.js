@@ -9,7 +9,7 @@ class DataBase
     {
         const uri=process.env.dbURI;
         this.client=new MongoClient(uri);
-        this.db;
+        this.db=this.client.db("webstore");
     }
 
     async connect()
@@ -18,7 +18,6 @@ class DataBase
         {
             await this.client.connect();
             console.log("Connected to MongoDB");
-            this.db=this.client.db("cst3144");
         }
         catch (error)
         {
@@ -26,20 +25,18 @@ class DataBase
         }
     }
 
-    async find(collection,id)
+    async find(collectionSearch,id)
     {
         try
         {
             if (!ObjectId.isValid(id))
             {
-                console.log("in here");
                 return ({msg: "Invalid ObjectId"});
             }
 
-            console.log("collection:",collection);
-            const result=await this.db.collection.findOne({_id: new ObjectId(id)})
-            console.log("result:",result);
-            return result
+            let toSearch=this.db.collection(collectionSearch);
+            const result=await toSearch.find({_id: new ObjectId(id)}).toArray();
+            return (JSON.stringify({result:result}))
         }
         catch (error)
         {

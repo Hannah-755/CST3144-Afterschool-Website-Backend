@@ -32,10 +32,12 @@ api.get("/collection/:collectionName/:id",async(request,response)=>
 
     if (results.msg)
     {
-        response.status(400);
-        response.send(results.msg);
+        response.status(400).send(results.msg);
     }
-    response.send(results);
+    else
+    {
+        response.send(JSON.parse(results).result);
+    }
 })
 
 api.post("/order",async(request,response)=>
